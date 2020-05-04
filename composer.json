@@ -22,7 +22,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Sysbox\\LaravelBaseEntity\\": "packages/sysbox/laravel-base-entity/src"
+            "Sysbox\\LaravelBaseEntity\\": "src/"
         }
     },
     "autoload-dev": {
