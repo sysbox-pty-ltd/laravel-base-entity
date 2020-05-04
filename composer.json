@@ -1,0 +1,22 @@
+{
+    "name": "sysbox/laravel-base-entity",
+    "description": "A base model for non-numerical id and common attributes: id, active, created, created_at, updated, updated_at",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "helin",
+            "email": "lin.he@sysbox.com.au"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "require-dev":  {},
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/",
+            "Sysbox\\laravel-base-entity\\": "packages/Sysbox/laravel-base-entity/src"
+        },
+        "classmap": []
+    }
+}

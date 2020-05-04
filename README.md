@@ -1,1 +1,1 @@
-# laravel-base-entity
+<h1>Base Entity for Laravel models</h1>
