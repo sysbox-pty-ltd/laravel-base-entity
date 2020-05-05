@@ -13,7 +13,13 @@ use Illuminate\Support\Facades\Config;
 
 class LaravelBaseEntity
 {
-    public function boot() {
+    /**
+     * Booting an Entity
+     *
+     * @throws Exception
+     * @throws \ReflectionException
+     */
+    public function bootModel() {
         $configFilePath = 'config/laravelBaseEntity.php';
         $userClassname = Config::get('laravelBaseEntity.user_class');
         if ($userClassname === null) {
@@ -30,4 +36,5 @@ class LaravelBaseEntity
             throw new Exception('Invalid user_class[' . $userClassname . '] in config file [' . $configFilePath . '], it needs to be a child class of ' . Model::class . '.');
         }
     }
+
 }

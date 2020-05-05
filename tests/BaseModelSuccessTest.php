@@ -8,7 +8,7 @@ namespace Sysbox\LaravelBaseEntity\Tests;
  * Time: 19:55
  */
 
-use Sysbox\LaravelBaseEntity\LaravelBaseEntity;
+use Sysbox\LaravelBaseEntity\Facades\LaravelBaseEntity;
 use Tests\TestCase;
 use Sysbox\LaravelBaseEntity\BaseModel;
 
@@ -39,6 +39,7 @@ class BaseModelSuccessTest extends TestCase
         // GIVEN a BaseModel Class
 
         // WHEN it's been initiated
+        LaravelBaseEntity::shouldReceive('bootModel')->withNoArgs()->once();
         $model = new BaseModelHelper();
 
         // THEN default value will be created with the class.
@@ -72,6 +73,7 @@ class BaseModelSuccessTest extends TestCase
      */
     public function aBaseModelCanBeUsedActivated() {
         // GIVEN a BaseModel object
+        LaravelBaseEntity::shouldReceive('bootModel')->withNoArgs()->once();
         $model = new BaseModelHelper();
 
         // WHEN it's been activated
@@ -93,6 +95,7 @@ class BaseModelSuccessTest extends TestCase
      */
     public function aBaseModelCanBeUsedDeactivated() {
         // GIVEN a BaseModel object
+        LaravelBaseEntity::shouldReceive('bootModel')->withNoArgs()->once();
         $model = new BaseModelHelper();
 
         // WHEN it's been activated
@@ -114,13 +117,11 @@ class BaseModelSuccessTest extends TestCase
     public function aBaseModelWillByPassObserverWhenFlagIsSetToBeTrue() {
         // GIVEN a BaseModel class and $byPassObserver is true
         BaseModelHelper::$byPassObserver = true;
-        BaseModel::$byPassObserver = true;
 
         // WHEN this BaseModel is Called
+        LaravelBaseEntity::shouldReceive('bootModel')->withNoArgs()->once();
         \Mockery::mock(BaseModelHelper::class)->makePartial()->shouldReceive('observe')->never();
         BaseModelHelper::boot();
-        \Mockery::mock(BaseModel::class)->makePartial()->shouldReceive('observe')->never();
-        BaseModel::boot();
     }
     /**
      * GIVEN a BaseModel class and $byPassObserver is NOT true
@@ -134,7 +135,7 @@ class BaseModelSuccessTest extends TestCase
         BaseModelHelper::$byPassObserver = false;
 
         // WHEN this BaseModel is Called
-        \Mockery::mock(LaravelBaseEntity::class)->shouldReceive('boot')->withNoArgs()->once();
+        LaravelBaseEntity::shouldReceive('bootModel')->withNoArgs()->once();
         $mock = \Mockery::mock(BaseModelHelper::class)->makePartial();
         $mock->shouldReceive('observe')
             ->once()->withAnyArgs();

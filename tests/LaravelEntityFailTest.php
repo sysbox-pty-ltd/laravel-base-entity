@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Config;
 use Sysbox\LaravelBaseEntity\BaseModel;
 use Sysbox\LaravelBaseEntity\Exception;
+use Sysbox\LaravelBaseEntity\LaravelBaseEntity;
 use Tests\TestCase;
 
 class FakeBaseModelChild extends BaseModel {}
@@ -19,8 +20,8 @@ class FakeBaseModelChild extends BaseModel {}
 class BaseModelFailTest extends TestCase
 {
     /**
-     * GIVEN a BaseModel Class and no config file registered
-     * WHEN it's been initiated
+     * GIVEN a LaravelBaseEntity exists and no config file registered
+     * WHEN it's asked to bootModel
      * THEN an error should return
      *
      * @test
@@ -28,15 +29,17 @@ class BaseModelFailTest extends TestCase
     public function aBaseModelWillFailToBootWhenNoConfigFile() {
         // GIVEN a BaseModel Class and no config file registered
 
-        // WHEN it's been initiated
+        // WHEN it's asked to bootModel
+        $entity = new LaravelBaseEntity();
+
         // an error should return
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('No config file found, try `php artisan vendor:publish --provider="Sysbox\LaravelBaseEntity\LaravelBaseEntityServiceProvider"` first.');
-        new FakeBaseModelChild();
+        $entity->bootModel();
     }
 
     /**
-     * GIVEN a BaseModel Class with a config file containing an empty UserClass field registered
+     * GIVEN a a LaravelBaseEntity exists with a config file containing an empty UserClass field registered
      * WHEN it's been initiated
      * THEN an error should return
      *
@@ -47,11 +50,13 @@ class BaseModelFailTest extends TestCase
         // GIVEN a BaseModel Class and no config file registered
         Config::set('laravelBaseEntity.user_class', $userClassName);
 
-        // WHEN it's been initiated
+        // WHEN it's asked to bootModel
+        $entity = new LaravelBaseEntity();
+
         // an error should return
         $this->expectException(Exception::class);
         $this->expectExceptionMessage($errorMsg);
-        new FakeBaseModelChild();
+        $entity->bootModel();
     }
 
     /**

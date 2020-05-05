@@ -204,7 +204,7 @@ abstract class BaseModel extends Model
     public static function boot()
     {
         parent::boot();
-        LaravelBaseEntity::boot();
+        LaravelBaseEntity::bootModel();
         if (static::$byPassObserver !== true) {
             $class = get_called_class();
             $class::observe(new BaseModelObserver());
