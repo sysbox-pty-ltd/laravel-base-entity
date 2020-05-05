@@ -46,7 +46,6 @@ class BaseModelSuccessTest extends TestCase
         $this->assertTrue($model->getNeedUUID());
         $this->assertEquals('string', $model->getKeyType());
         $this->assertEquals(['created_at', 'updated_at'], $model->getDates());
-        var_dump($this->app['config']->get('laravelBaseEntity.user_class'));
     }
     /**
      * GIVEN a BaseModel Class
