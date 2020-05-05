@@ -47,7 +47,7 @@ abstract class BaseModel extends Model
      */
     public function createdBy()
     {
-        return $this->belongsTo(User::class, 'created_by_id');
+        return $this->belongsTo(LaravelBaseEntity::getUserClassName(), 'created_by_id');
     }
 
     /**
@@ -55,7 +55,7 @@ abstract class BaseModel extends Model
      */
     public function updatedBy()
     {
-        return $this->belongsTo(User::class, 'updated_by_id');
+        return $this->belongsTo(LaravelBaseEntity::getUserClassName(), 'updated_by_id');
     }
 
     /**
@@ -66,7 +66,6 @@ abstract class BaseModel extends Model
     public function deactivate()
     {
         $this->active = 0;
-
         return $this;
     }
 
@@ -78,7 +77,6 @@ abstract class BaseModel extends Model
     public function activate()
     {
         $this->active = 1;
-
         return $this;
     }
 

@@ -8,6 +8,7 @@ namespace Sysbox\LaravelBaseEntity\Tests;
  * Time: 19:55
  */
 
+use Illuminate\Database\Eloquent\Model;
 use Sysbox\LaravelBaseEntity\Facades\LaravelBaseEntity;
 use Tests\TestCase;
 use Sysbox\LaravelBaseEntity\BaseModel;
@@ -43,6 +44,8 @@ class BaseModelSuccessTest extends TestCase
         $model = new BaseModelHelper();
 
         // THEN default value will be created with the class.
+        $this->assertInstanceOf(BaseModel::class, $model);
+        $this->assertInstanceOf(Model::class, $model);
         $this->assertFalse($model->incrementing);
         $this->assertTrue($model->getNeedUUID());
         $this->assertEquals('string', $model->getKeyType());

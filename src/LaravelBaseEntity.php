@@ -21,7 +21,7 @@ class LaravelBaseEntity
      */
     public function bootModel() {
         $configFilePath = 'config/laravelBaseEntity.php';
-        $userClassname = Config::get('laravelBaseEntity.user_class');
+        $userClassname = $this->getUserClassName();
         if ($userClassname === null) {
             throw new Exception('No config file found, try `php artisan vendor:publish --provider="Sysbox\LaravelBaseEntity\LaravelBaseEntityServiceProvider"` first.');
         }
@@ -35,6 +35,15 @@ class LaravelBaseEntity
         if(!$obj->isSubclassOf(Model::class)) {
             throw new Exception('Invalid user_class[' . $userClassname . '] in config file [' . $configFilePath . '], it needs to be a child class of ' . Model::class . '.');
         }
+    }
+
+    /**
+     * Getting the classname of the User for Created_by_id and updated_by_id
+     *
+     * @return string
+     */
+    public function getUserClassName() {
+        return Config::get('laravelBaseEntity.user_class');
     }
 
 }
