@@ -10,14 +10,11 @@ namespace Sysbox\LaravelBaseEntity\Tests;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Config;
-use Sysbox\LaravelBaseEntity\BaseModel;
 use Sysbox\LaravelBaseEntity\Exception;
 use Sysbox\LaravelBaseEntity\LaravelBaseEntity;
 use Tests\TestCase;
 
-class FakeBaseModelChild extends BaseModel {}
-
-class BaseModelFailTest extends TestCase
+class LaravelEntityFailTest extends TestCase
 {
     /**
      * GIVEN a LaravelBaseEntity exists and no config file registered
@@ -26,7 +23,7 @@ class BaseModelFailTest extends TestCase
      *
      * @test
      */
-    public function aBaseModelWillFailToBootWhenNoConfigFile() {
+    public function aLaravelBaseEntityWillFailToBootModelWhenNoConfigFile() {
         // GIVEN a BaseModel Class and no config file registered
 
         // WHEN it's asked to bootModel
@@ -46,7 +43,7 @@ class BaseModelFailTest extends TestCase
      * @test
      * @dataProvider dataProviderForaBaseModelWillFailToBootWhenConfigFileContainsEmptyUserClass
      */
-    public function aBaseModelWillFailToBootWhenConfigFileContainsEmptyUserClass($userClassName, $errorMsg) {
+    public function aLaravelBaseEntityWillFailToBootModelWhenConfigFileContainsEmptyUserClass($userClassName, $errorMsg) {
         // GIVEN a BaseModel Class and no config file registered
         Config::set('laravelBaseEntity.user_class', $userClassName);
 

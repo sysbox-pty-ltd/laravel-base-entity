@@ -8,6 +8,7 @@
 
 namespace Sysbox\LaravelBaseEntity;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Config;
 
@@ -44,6 +45,36 @@ class LaravelBaseEntity
      */
     public function getUserClassName() {
         return Config::get('laravelBaseEntity.user_class');
+    }
+
+    /**
+     * @return string
+     * @throws \Exception
+     */
+    public function getSystemUserId() {
+        $systemUserId = Config::get('laravelBaseEntity.system_user_id');
+        if (trim($systemUserId) !== '') {
+            return $systemUserId;
+        }
+        return $this->genHashId(get_class($this));
+    }
+
+    /**
+     * Generate Hash for Base Model's ID
+     *
+     * @param $class_name
+     * @param null $userId
+     * @param Carbon|null $time
+     * @return string
+     * @throws \Exception
+     */
+    public function genHashId($class_name, $userId = null, Carbon $time = null)
+    {
+        if (! $time instanceof Carbon) {
+            $time = Carbon::now();
+        }
+
+        return md5(implode('_', [$class_name, $userId, $time->getTimestamp(), random_int(0, PHP_INT_MAX)]));
     }
 
 }
