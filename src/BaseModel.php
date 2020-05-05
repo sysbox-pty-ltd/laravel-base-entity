@@ -12,24 +12,24 @@ abstract class BaseModel extends Model
      * @var bool
      */
     public $incrementing = false;
-
     /**
      * Whether this model will have a UUID.
      *
      * @var bool
      */
     protected $needUUID = true;
-
-    protected $keyType = 'string';
-
     /**
-     * Somehow the booting breaks the seeding process.
+     * @var string
+     */
+    protected $keyType = 'string';
+    /**
+     * Whether to bypass Observer automatically
      *
      * TODO: need to check why in the future.
      *
      * @var bool
      */
-    public static $isSeeding = false;
+    public static $byPassObserver = false;
 
     /**
      * The attributes that should be mutated to dates.
@@ -203,7 +203,8 @@ abstract class BaseModel extends Model
     public static function boot()
     {
         parent::boot();
-        if (self::$isSeeding !== true) {
+        LaravelBaseEntity::boot();
+        if (static::$byPassObserver !== true) {
             $class = get_called_class();
             $class::observe(new BaseModelObserver());
         }

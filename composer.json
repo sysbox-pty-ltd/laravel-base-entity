@@ -34,7 +34,10 @@
         "laravel": {
             "providers": [
                 "Sysbox\\LaravelBaseEntity\\LaravelBaseEntityServiceProvider"
-            ]
+            ],
+            "aliases": {
+                "LaravelBaseEntity": "Sysbox\\LaravelBaseEntity\\Facades\\LaravelBaseEntity"
+            }
         }
     }
 }
