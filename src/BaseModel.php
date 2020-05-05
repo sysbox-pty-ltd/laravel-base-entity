@@ -95,7 +95,7 @@ abstract class BaseModel extends Model
      */
     public function scopeOfActive($query, $active = 1)
     {
-        return $query->where($this->table . '.active', $active);
+        return $query->where($this->table . '.active', intval($active));
     }
 
     /**
@@ -154,7 +154,17 @@ abstract class BaseModel extends Model
      */
     public function scopeOfCreatedAtOlderThan($query, $date)
     {
-        return $query->where('created_at', '<', trim($date));
+        return $query->where($this->table . '.created_at', '<', trim($date));
+    }
+
+    /**
+     * @param $query
+     * @param $date
+     * @return mixed
+     */
+    public function scopeOfCreatedAtOlderAndEqualTo($query, $date)
+    {
+        return $query->where($this->table . '.created_at', '<=', trim($date));
     }
 
     /**
@@ -164,7 +174,16 @@ abstract class BaseModel extends Model
      */
     public function scopeOfCreatedAtNewerThan($query, $date)
     {
-        return $query->where('created_at', '>', trim($date));
+        return $query->where($this->table . '.created_at', '>', trim($date));
+    }
+    /**
+     * @param $query
+     * @param $date
+     * @return mixed
+     */
+    public function scopeOfCreatedAtNewerAndEqualTo($query, $date)
+    {
+        return $query->where($this->table . '.created_at', '>=', trim($date));
     }
 
     /**
@@ -174,7 +193,7 @@ abstract class BaseModel extends Model
      */
     public function scopeOfCreatedAt($query, $date)
     {
-        return $query->where('created_at', '=', $date);
+        return $query->where($this->table . '.created_at', '=', $date);
     }
 
     /**
@@ -184,7 +203,43 @@ abstract class BaseModel extends Model
      */
     public function scopeOfUpdatedAt($query, $date)
     {
-        return $query->where('updated_at', '=', $date);
+        return $query->where($this->table . '.updated_at', '=', $date);
+    }
+    /**
+     * @param $query
+     * @param $date
+     * @return mixed
+     */
+    public function scopeOfUpdatedAtNewerThan($query, $date)
+    {
+        return $query->where($this->table . '.updated_at', '>', trim($date));
+    }
+    /**
+     * @param $query
+     * @param $date
+     * @return mixed
+     */
+    public function scopeOfUpdatedAtNewerAndEqualTo($query, $date)
+    {
+        return $query->where($this->table . '.updated_at', '>=', trim($date));
+    }
+    /**
+     * @param $query
+     * @param $date
+     * @return mixed
+     */
+    public function scopeOfUpdatedAtOlderThan($query, $date)
+    {
+        return $query->where($this->table . '.updated_at', '<', trim($date));
+    }
+    /**
+     * @param $query
+     * @param $date
+     * @return mixed
+     */
+    public function scopeOfUpdatedAtOlderAndEqualTo($query, $date)
+    {
+        return $query->where($this->table . '.updated_at', '<=', trim($date));
     }
 
     /**
@@ -194,7 +249,7 @@ abstract class BaseModel extends Model
      */
     public function scopeOfCreatedById($query, $userId)
     {
-        return $query->where('created_by_id', '=', $userId);
+        return $query->where($this->table . '.created_by_id', '=', $userId);
     }
     /**
      *

@@ -15,6 +15,8 @@ use Sysbox\LaravelBaseEntity\BaseModel;
 
 
 class BaseModelHelper extends BaseModel {
+    const TABLE_NAME = 'fake_table_name';
+    public $table = self::TABLE_NAME;
     public function getNeedUUID() {
         return $this->needUUID;
     }
@@ -24,6 +26,7 @@ class BaseModelHelper extends BaseModel {
     public function getDates() {
         return $this->dates;
     }
+
 }
 
 
@@ -109,6 +112,67 @@ class BaseModelSuccessTest extends TestCase
         $this->assertEquals(0, $model->active);
         $this->assertFalse($actual->isActive());
         $this->assertFalse($model->isActive());
+    }
+
+    /**
+     * GIVEN a BaseModel entity
+     * WHEN it's been initiated
+     * THEN it should contain provided scope functions.
+     *
+     * @test
+     * @dataProvider dataProviderForaBaseModelNeedToHaveScopeFunctions
+     */
+    public function aBaseModelNeedToHaveScopeFunctions($scopeFuncName, $queryFuncName, $scopeParam, $mockParams) {
+        // GIVEN a BaseModel entity
+
+        // WHEN it's been initiated
+        LaravelBaseEntity::shouldReceive('bootModel')->withNoArgs()->once();
+        $model = new BaseModelHelper();
+
+        // THEN it should contain provided scope functions.
+        $fake_return = 'fake_result';
+        $mockQuery = \Mockery::mock('fakeQueryClass');
+        $mockQuery->shouldReceive($queryFuncName)
+            ->withArgs($mockParams)
+            ->once()
+            ->andReturn($fake_return);
+        $this->assertEquals($fake_return, $model->$scopeFuncName($mockQuery, $scopeParam));
+    }
+
+    /**
+     * data provider for aBaseModelNeedToHaveScopeFunctions
+     */
+    public function dataProviderForaBaseModelNeedToHaveScopeFunctions() {
+        $return = [];
+        // scopeOfActive
+        foreach([1, 0, '1', '0', null, ''] as $value) {
+            $return[] = ['scopeOfActive', 'where', $value, [BaseModelHelper::TABLE_NAME . '.active', intval($value)]];
+        }
+        // scopeOfId
+        $return[] = ['scopeOfId', 'where', 'fake_id', [BaseModelHelper::TABLE_NAME . '.id', 'fake_id']];
+        // scopeOfIds
+        $return[] = ['scopeOfIds', 'whereIn', ['fake_ids'], [BaseModelHelper::TABLE_NAME . '.id', ['fake_ids']]];
+        // scopeOfNotId
+        $return[] = ['scopeOfNotId', 'where', 'fake_ids', [BaseModelHelper::TABLE_NAME . '.id', '!=', 'fake_ids']];
+        // scopeOfNotIds
+        $return[] = ['scopeOfNotIds', 'whereNotIn', ['fake_ids'], [BaseModelHelper::TABLE_NAME . '.id', ['fake_ids']]];
+
+        foreach(['created_at', 'updated_at'] as $field) {
+            foreach(['>', '=', '<', '>=', '<='] as $operator) {
+                $funcName = 'scopeOf' . implode('', array_map(function($field) {
+                    return ucfirst($field);
+                }, explode('_', $field)));
+                switch($operator) {
+                    case '>': { $funcName .= 'NewerThan'; break;}
+                    case '<': { $funcName .= 'OlderThan'; break;}
+                    case '>=': { $funcName .= 'NewerAndEqualTo'; break;}
+                    case '<=': { $funcName .= 'OlderAndEqualTo'; break;}
+                    default: {break;}
+                }
+                $return[] = [$funcName, 'where', 'fake_date', [BaseModelHelper::TABLE_NAME . '.' . $field, $operator, 'fake_date']];
+            }
+        }
+        return $return;
     }
     /**
      * GIVEN a BaseModel class and $byPassObserver is true
