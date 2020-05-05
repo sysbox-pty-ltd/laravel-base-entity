@@ -30,8 +30,17 @@ class LaravelBaseEntityServiceProvider extends ServiceProvider
 
         // Register the service the package provides.
         // this is for Facade
-//        $this->app->singleton('laravelBaseEntity', function ($app) {
-//            return new BaseEntity;
-//        });
+        $this->app->singleton('LaravelBaseEntity', function ($app) {
+            return new LaravelBaseEntity();
+        });
+    }
+    /**
+     * Get the services provided by the provider.
+     *
+     * @return array
+     */
+    public function provides()
+    {
+        return ['LaravelBaseEntity'];
     }
 }

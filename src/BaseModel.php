@@ -3,6 +3,7 @@ namespace Sysbox\LaravelBaseEntity;
 
 
 use Illuminate\Database\Eloquent\Model;
+use Sysbox\LaravelBaseEntity\Facades\LaravelBaseEntity;
 
 abstract class BaseModel extends Model
 {

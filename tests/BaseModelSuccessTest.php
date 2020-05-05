@@ -12,6 +12,7 @@ use Sysbox\LaravelBaseEntity\LaravelBaseEntity;
 use Tests\TestCase;
 use Sysbox\LaravelBaseEntity\BaseModel;
 
+
 class BaseModelHelper extends BaseModel {
     public function getNeedUUID() {
         return $this->needUUID;
@@ -23,6 +24,7 @@ class BaseModelHelper extends BaseModel {
         return $this->dates;
     }
 }
+
 
 class BaseModelSuccessTest extends TestCase
 {

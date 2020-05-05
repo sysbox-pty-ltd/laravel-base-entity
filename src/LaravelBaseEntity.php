@@ -8,12 +8,14 @@
 
 namespace Sysbox\LaravelBaseEntity;
 
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Config;
 
 class LaravelBaseEntity
 {
-    public static function boot() {
+    public function boot() {
         $configFilePath = 'config/laravelBaseEntity.php';
-        $userClassname = config('laravelBaseEntity.user_class');
+        $userClassname = Config::get('laravelBaseEntity.user_class');
         if ($userClassname === null) {
             throw new Exception('No config file found, try `php artisan vendor:publish --provider="Sysbox\LaravelBaseEntity\LaravelBaseEntityServiceProvider"` first.');
         }
@@ -22,6 +24,10 @@ class LaravelBaseEntity
         }
         if (!class_exists($userClassname)) {
             throw new Exception('Invalid user_class[' . $userClassname . '] defined in module\'s config file [' . $configFilePath . '].');
+        }
+        $obj = new \ReflectionClass($userClassname);
+        if(!$obj->isSubclassOf(Model::class)) {
+            throw new Exception('Invalid user_class[' . $userClassname . '] in config file [' . $configFilePath . '], it needs to be a child class of ' . Model::class . '.');
         }
     }
 }
