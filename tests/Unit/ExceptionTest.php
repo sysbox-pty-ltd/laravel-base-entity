@@ -9,7 +9,7 @@ namespace Sysbox\LaravelBaseEntity\Tests\Unit;
  */
 
 use Sysbox\LaravelBaseEntity\Exception;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 
 
 class ExceptionTest extends TestCase

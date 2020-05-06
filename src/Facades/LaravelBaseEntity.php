@@ -17,6 +17,6 @@ class LaravelBaseEntity extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return 'LaravelBaseEntity';
+        return \Sysbox\LaravelBaseEntity\LaravelBaseEntity::PACKAGE_NAME;
     }
 }

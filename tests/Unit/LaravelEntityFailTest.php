@@ -22,7 +22,6 @@ class LaravelEntityFailTest extends TestCase
      * THEN an error should return
      *
      * @test
-     * @runInSeparateProcess
      */
     public function aLaravelBaseEntityWillFailToBootModelWhenNoConfigFile() {
         // GIVEN a BaseModel Class and no config file registered
