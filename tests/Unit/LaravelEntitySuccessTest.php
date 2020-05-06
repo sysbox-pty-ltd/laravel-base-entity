@@ -14,8 +14,6 @@ use Sysbox\LaravelBaseEntity\LaravelBaseEntity;
 use const Sysbox\LaravelBaseEntity\RANDOM_INT_FOR_TESTING;
 use Tests\TestCase;
 
-
-
 class LaravelEntitySuccessTest extends TestCase
 {
     /**
@@ -23,7 +21,7 @@ class LaravelEntitySuccessTest extends TestCase
      * @dataProvider dataProviderForaLaravelBaseEntityCanGetUserClassNameFromConfig
      */
     public function aLaravelBaseEntityCanGetUserClassNameFromConfig($field, $value, $funcName) {
-        Config::set('laravelBaseEntity.' . $field, $value);
+        Config::set(LaravelBaseEntity::PACKAGE_NAME . '.' . $field, $value);
 
         $entity = new LaravelBaseEntity();
 
@@ -45,11 +43,53 @@ class LaravelEntitySuccessTest extends TestCase
      */
     public function aLaravelBaseEntityCanGetSystemUserIdFromConfigWhenNoSystemIdProvided() {
 
-        require_once __DIR__ . '/../Helpers/PhpUnitBuildinFuncs.php';
-        Carbon::setTestNow(Carbon::createFromDate(2020, 1, 1));
-        $expected = md5(implode('_', [LaravelBaseEntity::class, null, Carbon::now()->getTimestamp(), RANDOM_INT_FOR_TESTING]));
         $entity = new LaravelBaseEntity();
 
+        Carbon::setTestNow(Carbon::createFromDate(2020, 1, 1));
+        $expected = LaravelBaseEntity::PACKAGE_NAME . '_sys_user_id';
         $this->assertEquals($expected, $entity->getSystemUserId());
+    }
+
+    /**
+     * @test
+     * @dataProvider dataProviderForaLaravelBaseEntityCanGetHashId
+     */
+    public function aLaravelBaseEntityCanGetHashId($className, $userId, $carbonTime) {
+
+        require_once __DIR__ . '/../Helpers/PhpUnitBuildinFuncs.php';
+        if (!$carbonTime instanceof Carbon) {
+            Carbon::setTestNow(Carbon::createFromDate(2020, 1, 1));
+            $carbonTime = Carbon::now();
+        }
+
+        $expected = md5(implode('_', [$className, $userId, $carbonTime->getTimestamp(), RANDOM_INT_FOR_TESTING]));
+
+        $entity = new LaravelBaseEntity();
+
+        $this->assertEquals($expected, $entity->genHashId($className, $userId, $carbonTime));
+    }
+
+    /**
+     * @return array
+     */
+    public function dataProviderForaLaravelBaseEntityCanGetHashId() {
+        return [
+            ['test', 'fake_user_id', Carbon::createFromDate(2020, 1, 1)],
+            ['test', 'fake_user_id', ''],
+            ['test', 'fake_user_id', null],
+        ];
+    }
+
+    /**
+     * @test
+     */
+    public function aLaravelBaseEntityCanGetNow() {
+
+        Carbon::setTestNow(Carbon::createFromDate(2020, 1, 1));
+
+        $entity = new LaravelBaseEntity();
+
+        $this->assertEquals(Carbon::now(), $entity->getNow());
+
     }
 }

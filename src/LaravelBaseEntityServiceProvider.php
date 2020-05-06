@@ -26,11 +26,11 @@ class LaravelBaseEntityServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->mergeConfigFrom(__DIR__.'/../config/laravelBaseEntity.php', 'laravelBaseEntity.config');
+        $this->mergeConfigFrom(__DIR__.'/../config/laravelBaseEntity.php', LaravelBaseEntity::PACKAGE_NAME . '.config');
 
         // Register the service the package provides.
         // this is for Facade
-        $this->app->singleton('LaravelBaseEntity', function ($app) {
+        $this->app->singleton(LaravelBaseEntity::PACKAGE_NAME, function ($app) {
             return new LaravelBaseEntity();
         });
     }
@@ -41,6 +41,6 @@ class LaravelBaseEntityServiceProvider extends ServiceProvider
      */
     public function provides()
     {
-        return ['LaravelBaseEntity'];
+        return [LaravelBaseEntity::PACKAGE_NAME];
     }
 }

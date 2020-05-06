@@ -1,4 +1,5 @@
-<?php namespace Sysbox\LaravelBaseEntity;
+<?php
+namespace Sysbox\LaravelBaseEntity;
 
 /**
  * Created by PhpStorm.
@@ -7,7 +8,6 @@
  * Time: 9:42 PM
  */
 
-use Carbon\Carbon;
 use Sysbox\LaravelBaseEntity\Facades\LaravelBaseEntity;
 
 /**
@@ -17,21 +17,6 @@ use Sysbox\LaravelBaseEntity\Facades\LaravelBaseEntity;
  */
 class BaseModelObserver
 {
-    /**
-     * Getting the current user id.
-     *
-     * @return mixed|string
-     */
-    private function getUserId()
-    {
-        $userClassname = LaravelBaseEntity::getUserClassName();
-        $currentUser = API::user();
-        if ($currentUser instanceof $userClassname) {
-            return $currentUser->getUserId();
-        }
-
-        return  LaravelBaseEntity::getSystemUserId();
-    }
 
     /**
      * Watching the creating event for BaseModel.
@@ -40,8 +25,8 @@ class BaseModelObserver
      */
     public function creating(BaseModel $model)
     {
-        $user_id = $this->getUserId();
-        $now = Carbon::now();
+        $user_id = LaravelBaseEntity::getCurrentUserId();
+        $now = LaravelBaseEntity::getNow();
         if (trim($model->id) === '') {
             $model->id = LaravelBaseEntity::genHashId(get_class($model), $user_id, $now);
         }
@@ -59,8 +44,8 @@ class BaseModelObserver
      */
     public function updating(BaseModel $model)
     {
-        $model->updated_by_id = $this->getUserId();
-        $model->updated_at = Carbon::now();
+        $model->updated_by_id = LaravelBaseEntity::getCurrentUserId();
+        $model->updated_at = LaravelBaseEntity::getNow();
     }
 
 }

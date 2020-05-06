@@ -11,3 +11,5 @@ require_once __DIR__ . '/../vendor/autoload.php';
 // load laravel libs
 require_once __DIR__ . '/../../../../vendor/autoload.php';
 
+require_once __DIR__ . '/Helpers/FakeBaseModelClass.php';
+

@@ -46,7 +46,7 @@ class LaravelEntityFailTest extends TestCase
      */
     public function aLaravelBaseEntityWillFailToBootModelWhenConfigFileContainsEmptyUserClass($userClassName, $errorMsg) {
         // GIVEN a BaseModel Class and no config file registered
-        Config::set('laravelBaseEntity.user_class', $userClassName);
+        Config::set(LaravelBaseEntity::PACKAGE_NAME . '.user_class', $userClassName);
 
         // WHEN it's asked to bootModel
         $entity = new LaravelBaseEntity();

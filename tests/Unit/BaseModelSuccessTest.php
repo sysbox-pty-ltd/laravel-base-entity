@@ -10,25 +10,9 @@ namespace Sysbox\LaravelBaseEntity\Tests\Unit;
 
 use Illuminate\Database\Eloquent\Model;
 use Sysbox\LaravelBaseEntity\Facades\LaravelBaseEntity;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 use Sysbox\LaravelBaseEntity\BaseModel;
-
-
-class BaseModelHelper extends BaseModel {
-    const TABLE_NAME = 'fake_table_name';
-    public $table = self::TABLE_NAME;
-    public function getNeedUUID() {
-        return $this->needUUID;
-    }
-    public function getKeyType() {
-        return $this->keyType;
-    }
-    public function getDates() {
-        return $this->dates;
-    }
-
-}
-
+use Sysbox\LaravelBaseEntity\Helpers\FakeBaseModelClass;
 
 class BaseModelSuccessTest extends TestCase
 {
@@ -44,7 +28,7 @@ class BaseModelSuccessTest extends TestCase
 
         // WHEN it's been initiated
         LaravelBaseEntity::shouldReceive('bootModel')->withNoArgs()->once();
-        $model = new BaseModelHelper();
+        $model = new FakeBaseModelClass();
 
         // THEN default value will be created with the class.
         $this->assertInstanceOf(BaseModel::class, $model);
@@ -68,7 +52,7 @@ class BaseModelSuccessTest extends TestCase
 
         // THEN default value will be created with the class.
         $this->assertFalse(BaseModel::$byPassObserver);
-        $this->assertFalse(BaseModelHelper::$byPassObserver);
+        $this->assertFalse(FakeBaseModelClass::$byPassObserver);
     }
     /**
      * GIVEN a BaseModel object
@@ -80,7 +64,7 @@ class BaseModelSuccessTest extends TestCase
     public function aBaseModelCanBeUsedActivated() {
         // GIVEN a BaseModel object
         LaravelBaseEntity::shouldReceive('bootModel')->withNoArgs()->once();
-        $model = new BaseModelHelper();
+        $model = new FakeBaseModelClass();
 
         // WHEN it's been activated
         $actual = $model->activate();
@@ -102,7 +86,7 @@ class BaseModelSuccessTest extends TestCase
     public function aBaseModelCanBeUsedDeactivated() {
         // GIVEN a BaseModel object
         LaravelBaseEntity::shouldReceive('bootModel')->withNoArgs()->once();
-        $model = new BaseModelHelper();
+        $model = new FakeBaseModelClass();
 
         // WHEN it's been activated
         $actual = $model->deactivate();
@@ -127,7 +111,7 @@ class BaseModelSuccessTest extends TestCase
 
         // WHEN it's been initiated
         LaravelBaseEntity::shouldReceive('bootModel')->withNoArgs()->once();
-        $model = new BaseModelHelper();
+        $model = new FakeBaseModelClass();
 
         // THEN it should contain provided scope functions.
         $fake_return = 'fake_result';
@@ -146,16 +130,16 @@ class BaseModelSuccessTest extends TestCase
         $return = [];
         // scopeOfActive
         foreach([1, 0, '1', '0', null, ''] as $value) {
-            $return[] = ['scopeOfActive', 'where', $value, [BaseModelHelper::TABLE_NAME . '.active', intval($value)]];
+            $return[] = ['scopeOfActive', 'where', $value, [FakeBaseModelClass::TABLE_NAME . '.active', intval($value)]];
         }
         // scopeOfId
-        $return[] = ['scopeOfId', 'where', 'fake_id', [BaseModelHelper::TABLE_NAME . '.id', 'fake_id']];
+        $return[] = ['scopeOfId', 'where', 'fake_id', [FakeBaseModelClass::TABLE_NAME . '.id', 'fake_id']];
         // scopeOfIds
-        $return[] = ['scopeOfIds', 'whereIn', ['fake_ids'], [BaseModelHelper::TABLE_NAME . '.id', ['fake_ids']]];
+        $return[] = ['scopeOfIds', 'whereIn', ['fake_ids'], [FakeBaseModelClass::TABLE_NAME . '.id', ['fake_ids']]];
         // scopeOfNotId
-        $return[] = ['scopeOfNotId', 'where', 'fake_ids', [BaseModelHelper::TABLE_NAME . '.id', '!=', 'fake_ids']];
+        $return[] = ['scopeOfNotId', 'where', 'fake_ids', [FakeBaseModelClass::TABLE_NAME . '.id', '!=', 'fake_ids']];
         // scopeOfNotIds
-        $return[] = ['scopeOfNotIds', 'whereNotIn', ['fake_ids'], [BaseModelHelper::TABLE_NAME . '.id', ['fake_ids']]];
+        $return[] = ['scopeOfNotIds', 'whereNotIn', ['fake_ids'], [FakeBaseModelClass::TABLE_NAME . '.id', ['fake_ids']]];
 
         foreach(['created_at', 'updated_at'] as $field) {
             foreach(['>', '=', '<', '>=', '<='] as $operator) {
@@ -169,7 +153,7 @@ class BaseModelSuccessTest extends TestCase
                     case '<=': { $funcName .= 'OlderAndEqualTo'; break;}
                     default: {break;}
                 }
-                $return[] = [$funcName, 'where', 'fake_date', [BaseModelHelper::TABLE_NAME . '.' . $field, $operator, 'fake_date']];
+                $return[] = [$funcName, 'where', 'fake_date', [FakeBaseModelClass::TABLE_NAME . '.' . $field, $operator, 'fake_date']];
             }
         }
         return $return;
@@ -183,12 +167,12 @@ class BaseModelSuccessTest extends TestCase
      */
     public function aBaseModelWillByPassObserverWhenFlagIsSetToBeTrue() {
         // GIVEN a BaseModel class and $byPassObserver is true
-        BaseModelHelper::$byPassObserver = true;
+        FakeBaseModelClass::$byPassObserver = true;
 
         // WHEN this BaseModel is Called
         LaravelBaseEntity::shouldReceive('bootModel')->withNoArgs()->once();
-        \Mockery::mock(BaseModelHelper::class)->makePartial()->shouldReceive('observe')->never();
-        BaseModelHelper::boot();
+        \Mockery::mock(FakeBaseModelClass::class)->makePartial()->shouldReceive('observe')->never();
+        FakeBaseModelClass::boot();
         $this->assertTrue(true);
     }
     /**
@@ -200,11 +184,11 @@ class BaseModelSuccessTest extends TestCase
     public function aBaseModelWillNotByPassObserverWhenFlagIsSetToBeNotTrue() {
         // GIVEN a BaseModel class and $byPassObserver is true
         BaseModel::$byPassObserver = true;
-        BaseModelHelper::$byPassObserver = false;
+        FakeBaseModelClass::$byPassObserver = false;
 
         // WHEN this BaseModel is Called
         LaravelBaseEntity::shouldReceive('bootModel')->withNoArgs()->once();
-        $mock = \Mockery::mock(BaseModelHelper::class)->makePartial();
+        $mock = \Mockery::mock(FakeBaseModelClass::class)->makePartial();
         $mock->shouldReceive('observe')
             ->once()->withAnyArgs();
 //            ->with(
@@ -213,6 +197,6 @@ class BaseModelSuccessTest extends TestCase
 //                    return true;
 //                })
 //            );
-        BaseModelHelper::boot();
+        FakeBaseModelClass::boot();
     }
 }

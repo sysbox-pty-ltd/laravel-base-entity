@@ -14,6 +14,7 @@ use Sysbox\LaravelBaseEntity\Interfaces\UserReferable;
 
 class LaravelBaseEntity
 {
+    const PACKAGE_NAME = 'LaravelBaseEntity';
     /**
      * Booting an Entity
      *
@@ -45,7 +46,7 @@ class LaravelBaseEntity
      * @return string
      */
     public function getUserClassName() {
-        return Config::get('laravelBaseEntity.user_class');
+        return $this->getSystemConfig('user_class');
     }
 
     /**
@@ -53,11 +54,39 @@ class LaravelBaseEntity
      * @throws \Exception
      */
     public function getSystemUserId() {
-        $systemUserId = Config::get('laravelBaseEntity.system_user_id');
+        $systemUserId = $this->getSystemConfig('system_user_id');
         if (trim($systemUserId) !== '') {
             return $systemUserId;
         }
-        return $this->genHashId(get_class($this));
+        return self::PACKAGE_NAME . '_sys_user_id';
+    }
+
+    /**
+     * @param $key
+     * @return mixed
+     */
+    private function getSystemConfig($key) {
+        return Config::get(self::PACKAGE_NAME .  '.' . $key);
+    }
+
+    /**
+     * @return string
+     * @throws \Exception
+     */
+    public function getCurrentUserId() {
+        $userClassname = $this->getUserClassName();
+        $currentUser = API::user();
+        if ($currentUser instanceof $userClassname) {
+            return $currentUser->getUserId();
+        }
+        return $this->getSystemUserId();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNow() {
+        return Carbon::now();
     }
 
     /**
@@ -72,7 +101,10 @@ class LaravelBaseEntity
     public function genHashId($class_name, $userId = null, Carbon $time = null)
     {
         if (! $time instanceof Carbon) {
-            $time = Carbon::now();
+            $time = $this->getNow();
+        }
+        if (trim($userId) === '') {
+            $userId = $this->getSystemUserId();
         }
 
         return md5(implode('_', [$class_name, $userId, $time->getTimestamp(), random_int(0, PHP_INT_MAX)]));
