@@ -35,4 +35,28 @@ class BaseModelObserverSuccessTest extends TestCase
         $this->assertEquals($fakeUpdatedById, $fakeModel->updated_by_id);
         $this->assertEquals(trim($fakeUpdatedAt), trim($fakeModel->updated_at));
     }
+
+    /**
+     * @test
+     */
+    public function aBaseModelObserverCanCreateFieldsForABaseModel() {
+        $observer = new BaseModelObserver();
+        LaravelBaseEntity::shouldReceive('bootModel')->withNoArgs()->once();
+        $fakeModel = new FakeBaseModelClass();
+
+        $fakeId = 'fake_model_id';
+        $fakeUserId = 'fake_user_id';
+        $fakeNow = Carbon::createFromDate(2020, 1, 1);
+        LaravelBaseEntity::shouldReceive('genHashId')->withArgs([get_class($fakeModel), $fakeUserId, $fakeNow])->once()->andReturn($fakeId);
+        LaravelBaseEntity::shouldReceive('getCurrentUserId')->withNoArgs()->once()->andReturn($fakeUserId);
+        LaravelBaseEntity::shouldReceive('getNow')->withNoArgs()->once()->andReturn($fakeNow);
+        $observer->creating($fakeModel);
+
+        $this->assertEquals($fakeId, $fakeModel->id);
+        $this->assertEquals(1, $fakeModel->active);
+        $this->assertEquals($fakeUserId, $fakeModel->created_by_id);
+        $this->assertEquals($fakeUserId, $fakeModel->updated_by_id);
+        $this->assertEquals(trim($fakeNow), trim($fakeModel->created_at));
+        $this->assertEquals(trim($fakeNow), trim($fakeModel->updated_at));
+    }
 }
