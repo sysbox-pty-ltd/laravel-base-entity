@@ -9,8 +9,8 @@
 namespace Sysbox\LaravelBaseEntity;
 
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Config;
+use Sysbox\LaravelBaseEntity\Interfaces\UserReferable;
 
 class LaravelBaseEntity
 {
@@ -33,8 +33,8 @@ class LaravelBaseEntity
             throw new Exception('Invalid user_class[' . $userClassname . '] defined in module\'s config file [' . $configFilePath . '].');
         }
         $obj = new \ReflectionClass($userClassname);
-        if(!$obj->isSubclassOf(Model::class)) {
-            throw new Exception('Invalid user_class[' . $userClassname . '] in config file [' . $configFilePath . '], it needs to be a child class of ' . Model::class . '.');
+        if(!$obj->implementsInterface(UserReferable::class)) {
+            throw new Exception('Invalid user_class[' . $userClassname . '] in config file [' . $configFilePath . '], it needs to implement interface: ' . UserReferable::class . '.');
         }
         return $this;
     }

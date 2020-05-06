@@ -8,9 +8,9 @@ namespace Sysbox\LaravelBaseEntity\Tests\Unit;
  * Time: 19:55
  */
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Config;
 use Sysbox\LaravelBaseEntity\Exception;
+use Sysbox\LaravelBaseEntity\Interfaces\UserReferable;
 use Sysbox\LaravelBaseEntity\LaravelBaseEntity;
 use Tests\TestCase;
 
@@ -65,7 +65,7 @@ class LaravelEntityFailTest extends TestCase
         return [
             ['', 'No user_class defined in module\'s config file, please define user_class under config file [config/laravelBaseEntity.php].'],
             ['fake_className', 'Invalid user_class[fake_className] defined in module\'s config file [config/laravelBaseEntity.php].'],
-            [\stdClass::class, 'Invalid user_class[' . \stdClass::class . '] in config file [config/laravelBaseEntity.php], it needs to be a child class of ' . Model::class . '.'],
+            [\stdClass::class, 'Invalid user_class[' . \stdClass::class . '] in config file [config/laravelBaseEntity.php], it needs to implement interface: ' . UserReferable::class . '.'],
         ];
     }
 }

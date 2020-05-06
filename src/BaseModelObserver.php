@@ -8,6 +8,7 @@
  */
 
 use Carbon\Carbon;
+use Sysbox\LaravelBaseEntity\Facades\LaravelBaseEntity;
 
 /**
  * Class BaseModelObserver.
@@ -21,34 +22,15 @@ class BaseModelObserver
      *
      * @return mixed|string
      */
-    protected function getUserId()
+    private function getUserId()
     {
-        if (! API::user() instanceof User) {
-            return getenv('SYSTEM_USER_ID');
+        $userClassname = LaravelBaseEntity::getUserClassName();
+        $currentUser = API::user();
+        if ($currentUser instanceof $userClassname) {
+            return $currentUser->getUserId();
         }
 
-        return API::user()->id;
-    }
-
-    /**
-     * Generate Hash for Base Model.
-     *
-     * @param $class_name
-     * @param Carbon|null $time
-     * @param string $salt
-     *
-     * @return string
-     */
-    protected function genHash($class_name, $userId = null, Carbon $time = null)
-    {
-        if (! $time instanceof Carbon) {
-            $time = Carbon::now();
-        }
-        if (trim($userId) === '') {
-            $userId = $this->getUserId();
-        }
-
-        return md5(implode('_', [$class_name, $userId, $time->getTimestamp(), random_int(0, PHP_INT_MAX)]));
+        return  LaravelBaseEntity::getSystemUserId();
     }
 
     /**
@@ -61,7 +43,7 @@ class BaseModelObserver
         $user_id = $this->getUserId();
         $now = Carbon::now();
         if (trim($model->id) === '') {
-            $model->id = $this->genHash(get_class($model), $user_id, $now);
+            $model->id = LaravelBaseEntity::genHashId(get_class($model), $user_id, $now);
         }
         $model->active = 1;
         $model->created_at = $now;
@@ -77,11 +59,8 @@ class BaseModelObserver
      */
     public function updating(BaseModel $model)
     {
-        $user_id = getenv('SYSTEM_USER_ID');
-        if (API::user() instanceof User) {
-            $user_id = API::user()->id;
-        }
-        $model->updated_by_id = $user_id;
+        $model->updated_by_id = $this->getUserId();
         $model->updated_at = Carbon::now();
     }
+
 }
