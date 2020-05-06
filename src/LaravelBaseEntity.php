@@ -36,6 +36,7 @@ class LaravelBaseEntity
         if(!$obj->isSubclassOf(Model::class)) {
             throw new Exception('Invalid user_class[' . $userClassname . '] in config file [' . $configFilePath . '], it needs to be a child class of ' . Model::class . '.');
         }
+        return $this;
     }
 
     /**

@@ -1,6 +1,6 @@
 <?php
 
-namespace Sysbox\LaravelBaseEntity\Tests;
+namespace Sysbox\LaravelBaseEntity\Tests\Unit;
 /**
  * Created by PhpStorm.
  * User: helin16
@@ -10,7 +10,7 @@ namespace Sysbox\LaravelBaseEntity\Tests;
 
 use Illuminate\Database\Eloquent\Model;
 use Sysbox\LaravelBaseEntity\Facades\LaravelBaseEntity;
-use Tests\TestCase;
+use PHPUnit\Framework\TestCase;
 use Sysbox\LaravelBaseEntity\BaseModel;
 
 
@@ -189,6 +189,7 @@ class BaseModelSuccessTest extends TestCase
         LaravelBaseEntity::shouldReceive('bootModel')->withNoArgs()->once();
         \Mockery::mock(BaseModelHelper::class)->makePartial()->shouldReceive('observe')->never();
         BaseModelHelper::boot();
+        $this->assertTrue(true);
     }
     /**
      * GIVEN a BaseModel class and $byPassObserver is NOT true

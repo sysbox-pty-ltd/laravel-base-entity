@@ -1,6 +1,6 @@
 <?php
 
-namespace Sysbox\LaravelBaseEntity\Tests;
+namespace Sysbox\LaravelBaseEntity\Tests\Unit;
 /**
  * Created by PhpStorm.
  * User: helin16
@@ -22,6 +22,7 @@ class LaravelEntityFailTest extends TestCase
      * THEN an error should return
      *
      * @test
+     * @runInSeparateProcess
      */
     public function aLaravelBaseEntityWillFailToBootModelWhenNoConfigFile() {
         // GIVEN a BaseModel Class and no config file registered

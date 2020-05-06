@@ -1,6 +1,6 @@
 <?php
 
-namespace Sysbox\LaravelBaseEntity\Tests;
+namespace Sysbox\LaravelBaseEntity\Tests\Unit;
 /**
  * Created by PhpStorm.
  * User: helin16
@@ -9,7 +9,7 @@ namespace Sysbox\LaravelBaseEntity\Tests;
  */
 
 use Sysbox\LaravelBaseEntity\Exception;
-use Tests\TestCase;
+use PHPUnit\Framework\TestCase;
 
 
 class ExceptionTest extends TestCase
