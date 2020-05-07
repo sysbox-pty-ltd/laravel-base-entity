@@ -16,7 +16,7 @@ Via Composer
 $ composer require sysbox/laravel-base-entity
 ```
 
-## Usage
+## Setup
 
 ###step 1
 Publish the config file
@@ -25,7 +25,90 @@ $ php artisan vendor:publish --provider='Sysbox\LaravelBaseEntity\LaravelBaseEnt
 ```
 ###step 2
 Setup your laravel's interface model, like below: 
-edit <laravel-root-dir>/app/User.php
+edit `<laravel-root-dir>/app/User.php`
 ```php
+class User extend BaseModel implements UserReferable <<<<<<<<< implement this interface
+{
+
+    /**
+     * @return mixed <<<<<<<<< add this function
+     */
+    public function getUserId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return \Illuminate\Contracts\Auth\Authenticatable|UserReferable|null
+     */
+    public static function getCurrentUser() <<<<<<<<< add this function
+    {
+        return Auth::user();
+    }
+}
+```
+
+###step 3
+Setup your config file:
+edit `<laravel-root-dir>/config/laravelBaseEntity.php`, you will see something like:
+```php
+return [
+
+
+    // this is the user class that will be refer to for fields: created_by_id and updated_by_id
+    'user_class' => User::class, <<<<<<<<< add user class here.
+
+    // this is the system user's id,
+    // leave it BLANK for auto generation.
+    // or specifiy in env, ie: 'system_user_id' => env('SYSTEM_USER_ID'),
+    'system_user_id' => '',
+];
+```
+
+
+## Usage
+Now you should be able to create any Laravel Model and just extend from BaseModel, like this
+```php
+use Sysbox\LaravelBaseEntity\BaseModel;
+class Person extend BaseModel <<<<<<<<< extend your BaseModel
+{
+    // all other laravel function for the model..
+}
+```
+
+And you can also create columns in migration, like this:
+```php
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+use Sysbox\LaravelBaseEntity\Facades\LaravelBaseEntity;
+
+class CreateUsersTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('users', function (Blueprint $table) {
+            LaravelBaseEntity::addBasicLaravelBaseEntityColumns($table);
+            $table->string('name');
+            //or add column
+            // LaravelBaseEntity::addHashIdColumn($table, 'another_user_id');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('users');
+    }
+}
 
 ```
