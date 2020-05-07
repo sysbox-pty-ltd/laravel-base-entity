@@ -10,6 +10,7 @@ namespace Sysbox\LaravelBaseEntity\Tests\Unit;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Config;
+use Sysbox\LaravelBaseEntity\Helpers\FakeUserReferableClass;
 use Sysbox\LaravelBaseEntity\LaravelBaseEntity;
 use const Sysbox\LaravelBaseEntity\RANDOM_INT_FOR_TESTING;
 use Tests\TestCase;
@@ -90,6 +91,51 @@ class LaravelEntitySuccessTest extends TestCase
         $entity = new LaravelBaseEntity();
 
         $this->assertEquals(Carbon::now(), $entity->getNow());
+    }
 
+    /**
+     * GIVEN a class implements UserReferable
+     * AND this classname has been set in the config file against: user_class
+     * AND there is a current user set
+     * WHEN LaravelBaseEntity is trying to get the current user id
+     * THEN the user id will be returned.
+     *
+     * @test
+     */
+    public function aLaravelBaseEntityCanGetCurrentUserId() {
+        // GIVEN a class implements UserReferable
+        // AND this classname has been set in the config file against: user_class
+        Config::set(LaravelBaseEntity::PACKAGE_NAME . '.user_class', FakeUserReferableClass::class );
+
+        // WHEN LaravelBaseEntity is trying to get the current user id
+        $entity = new LaravelBaseEntity();
+        $currentUserId = $entity->getCurrentUserId();
+
+        // THEN the user id will be returned.
+        $this->assertEquals(FakeUserReferableClass::$currentUserId, $currentUserId);
+    }
+    /**
+     * GIVEN a class implements UserReferable
+     * AND this classname has been set in the config file against: user_class
+     * AND there is no current user set
+     * WHEN LaravelBaseEntity is trying to get the current user id
+     * THEN the user id will be returned.
+     *
+     * @test
+     */
+    public function aLaravelBaseEntityCanGetSystemUserIdWhenNoCurrentUserSet() {
+        // GIVEN a class implements UserReferable
+        // AND this classname has been set in the config file against: user_class
+        $fake_system_user_id = 'fake_system_user_id';
+        Config::set(LaravelBaseEntity::PACKAGE_NAME . '.user_class', FakeUserReferableClass::class );
+        Config::set(LaravelBaseEntity::PACKAGE_NAME . '.system_user_id', $fake_system_user_id );
+
+        // WHEN LaravelBaseEntity is trying to get the current user id
+        FakeUserReferableClass::$canGetUserUserObj = false;
+        $entity = new LaravelBaseEntity();
+        $currentUserId = $entity->getCurrentUserId();
+
+        // THEN the user id will be returned.
+        $this->assertEquals($fake_system_user_id, $currentUserId);
     }
 }

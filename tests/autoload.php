@@ -12,4 +12,5 @@ require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/../../../../vendor/autoload.php';
 
 require_once __DIR__ . '/Helpers/FakeBaseModelClass.php';
+require_once __DIR__ . '/Helpers/FakeUserReferableClass.php';
 

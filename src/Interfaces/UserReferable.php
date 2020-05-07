@@ -16,4 +16,11 @@ interface UserReferable
      * @return mixed
      */
     public function getUserId();
+
+    /**
+     * getting the current user for created_by_id and/or updated_by_id
+     *
+     * @return UserReferable|null
+     */
+    public static function getCurrentUser();
 }

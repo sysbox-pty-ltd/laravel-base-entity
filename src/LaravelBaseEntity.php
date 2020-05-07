@@ -75,7 +75,7 @@ class LaravelBaseEntity
      */
     public function getCurrentUserId() {
         $userClassname = $this->getUserClassName();
-        $currentUser = API::user();
+        $currentUser = $userClassname::getCurrentUser();
         if ($currentUser instanceof $userClassname) {
             return $currentUser->getUserId();
         }
