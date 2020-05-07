@@ -9,6 +9,8 @@
 namespace Sysbox\LaravelBaseEntity;
 
 use Carbon\Carbon;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Schema\ColumnDefinition;
 use Illuminate\Support\Facades\Config;
 use Sysbox\LaravelBaseEntity\Interfaces\UserReferable;
 
@@ -108,6 +110,48 @@ class LaravelBaseEntity
         }
 
         return md5(implode('_', [$class_name, $userId, $time->getTimestamp(), random_int(0, PHP_INT_MAX)]));
+    }
+
+    /**
+     * @param Blueprint $blueprint
+     * @param string $columnName
+     *
+     * @return Blueprint
+     */
+    public function addIdColumn(Blueprint $blueprint, $columnName = 'id')
+    {
+        $this->addHashIdColumn($blueprint, $columnName)->index();
+        $blueprint->primary($columnName)->index();
+        return $blueprint;
+    }
+
+    /**
+     * Adding a hash id column to the table
+     *
+     * @param Blueprint $blueprint
+     * @param $name
+     * @return Blueprint
+     */
+    public function addHashIdColumn(Blueprint $blueprint, $name)
+    {
+        return $blueprint->string($name, 32);
+    }
+
+    /**
+     * Add creation and update timestamps to the table.
+     *
+     * @param Blueprint $blueprint
+     * @return Blueprint
+     */
+    public function addBasicLaravelBaseEntityColumns(Blueprint $blueprint)
+    {
+        $this->addIdColumn($blueprint);
+        $blueprint->boolean('active')->index();
+        $this->addHashIdColumn($blueprint, 'created_by_id')->index();
+        $blueprint->timestamp('created_at')->nullable();
+        $this->addHashIdColumn($blueprint, 'updated_by_id')->index();
+        $blueprint->timestamp('updated_at')->nullable();
+        return $blueprint;
     }
 
 }

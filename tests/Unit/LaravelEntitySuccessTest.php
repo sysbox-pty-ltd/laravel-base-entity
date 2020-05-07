@@ -9,6 +9,7 @@ namespace Sysbox\LaravelBaseEntity\Tests\Unit;
  */
 
 use Carbon\Carbon;
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Config;
 use Sysbox\LaravelBaseEntity\Helpers\FakeUserReferableClass;
 use Sysbox\LaravelBaseEntity\LaravelBaseEntity;
@@ -137,5 +138,86 @@ class LaravelEntitySuccessTest extends TestCase
 
         // THEN the user id will be returned.
         $this->assertEquals($fake_system_user_id, $currentUserId);
+    }
+    /**
+     * @test
+     */
+    public function aLaravelBaseEntityCanCanAddHashIdColumnAsId() {
+        $blueprint = new Blueprint('fake_table');
+
+        $entity = new LaravelBaseEntity();
+        $entity->addIdColumn($blueprint);
+        $columns = $blueprint->getColumns();
+
+        $this->assertEquals([
+            'type' => 'string',
+            'name' => 'id',
+            'length' => 32,
+            'index' => true,
+        ], $columns[0]->getAttributes());
+    }
+
+    /**
+     * @test
+     */
+    public function aLaravelBaseEntityCanCanAddHashIdColumnAsDifferentName() {
+        $blueprint = new Blueprint('fake_table');
+
+        $columnName = 'fake_column_name';
+        $entity = new LaravelBaseEntity();
+        $entity->addHashIdColumn($blueprint, $columnName);
+        $columns = $blueprint->getColumns();
+
+        $this->assertEquals([
+            'type' => 'string',
+            'name' => $columnName,
+            'length' => 32,
+        ], $columns[0]->getAttributes());
+    }
+    /**
+     * @test
+     */
+    public function aLaravelBaseEntityCanCanAddBasicLaravelBaseEntityColumns() {
+        $blueprint = new Blueprint('fake_table');
+
+        $entity = new LaravelBaseEntity();
+        $entity->addBasicLaravelBaseEntityColumns($blueprint);
+        $columns = $blueprint->getColumns();
+
+        $this->assertEquals([
+            'type' => 'string',
+            'name' => 'id',
+            'length' => 32,
+            'index' => true,
+        ], $columns[0]->getAttributes());
+        $this->assertEquals([
+            'type' => 'boolean',
+            'name' => 'active',
+            'index' => true,
+        ], $columns[1]->getAttributes());
+        $this->assertEquals([
+            'type' => 'string',
+            'name' => 'created_by_id',
+            'length' => 32,
+            'index' => true,
+        ], $columns[2]->getAttributes());
+        $this->assertEquals([
+            'type' => 'timestamp',
+            'name' => 'created_at',
+            'precision' => 0,
+            'nullable' => true,
+        ], $columns[3]->getAttributes());
+        $this->assertEquals([
+            'type' => 'string',
+            'name' => 'updated_by_id',
+            'length' => 32,
+            'index' => true,
+        ], $columns[4]->getAttributes());
+        $this->assertEquals([
+            'type' => 'timestamp',
+            'name' => 'updated_at',
+            'precision' => 0,
+            'nullable' => true,
+        ], $columns[5]->getAttributes());
     }
 }
