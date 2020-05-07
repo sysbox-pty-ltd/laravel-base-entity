@@ -180,6 +180,7 @@ class BaseModelSuccessTest extends TestCase
      * WHEN this BaseModel is Called
      * THEN it will by pass the observer.
      *
+     * @test
      */
     public function aBaseModelWillNotByPassObserverWhenFlagIsSetToBeNotTrue() {
         // GIVEN a BaseModel class and $byPassObserver is true
