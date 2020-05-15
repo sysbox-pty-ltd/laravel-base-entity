@@ -50,7 +50,7 @@ class User extend BaseModel implements UserReferable <<<<<<<<< implement this in
 
 ###step 3
 Setup your config file:
-edit `<laravel-root-dir>/config/laravelBaseEntity.php`, you will see something like:
+edit `<laravel-root-dir>/config/LaravelBaseEntity.php`, you will see something like:
 ```php
 return [
 
