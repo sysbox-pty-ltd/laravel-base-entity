@@ -1,7 +1,6 @@
 {
     "name": "sysbox/laravel-base-entity",
     "description": "A base model for non-numerical id and common attributes: id, active, created, created_at, updated, updated_at",
-    "version": "1.0.13",
     "type": "project",
     "license": "MIT",
     "authors": [
@@ -11,6 +10,7 @@
         }
     ],
     "minimum-stability": "dev",
+    "prefer-stable": true,
     "keywords": ["Laravel", "BaseEntity"],
     "require": {
         "illuminate/support": "~5|~6|~7"
