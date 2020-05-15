@@ -15,7 +15,7 @@ class LaravelBaseEntityServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->publishes([
-            __DIR__.'/../config/laravelBaseEntity.php' => config_path('laravelBaseEntity.php'),
+            __DIR__.'/../config/' . LaravelBaseEntity::PACKAGE_NAME . '.php' => config_path(LaravelBaseEntity::PACKAGE_NAME . '.php'),
         ]);
     }
 
@@ -26,7 +26,7 @@ class LaravelBaseEntityServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->mergeConfigFrom(__DIR__.'/../config/laravelBaseEntity.php', LaravelBaseEntity::PACKAGE_NAME . '.config');
+        $this->mergeConfigFrom(__DIR__.'/../config/' . LaravelBaseEntity::PACKAGE_NAME . '.php', LaravelBaseEntity::PACKAGE_NAME . '.config');
 
         // Register the service the package provides.
         // this is for Facade
